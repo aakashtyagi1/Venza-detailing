@@ -1,0 +1,205 @@
+[
+  {
+    "id": "BID-2606",
+    "customerName": "Daniel Vance",
+    "email": "daniel.vance@vancetech.io",
+    "phone": "+1 (415) 890-4421",
+    "vehicle": {
+      "year": "2026",
+      "make": "Porsche",
+      "model": "911 GT3 RS",
+      "paintColor": "Guards Red / Gloss Carbon",
+      "condition": "Heavy Clear Coat Oxidation"
+    },
+    "servicePackage": {
+      "id": "signature-wash",
+      "name": "Signature Decon Wash",
+      "duration": "1 Day Turnaround",
+      "basePrice": 249
+    },
+    "selectedAddons": [
+      {
+        "id": "interior-alcantara",
+        "name": "Alcantara & Leather Hydrophobic Barrier",
+        "price": 180
+      }
+    ],
+    "totalPrice": 429,
+    "preferredDate": "2026-11-04",
+    "preferredTime": "11:00 AM (Mid-Day Intake)",
+    "specialNotes": "Laguna Seca track rubber on rear arches. Please inspect clear bra.",
+    "depositPaid": false,
+    "createdAt": "2026-10-26T14:08:07.776Z",
+    "status": "NEW LEAD"
+  },
+  {
+    "id": "BID-6725",
+    "customerName": "Daniel Vance",
+    "email": "daniel.vance@vancetech.io",
+    "phone": "+1 (415) 890-4421",
+    "vehicle": {
+      "paintColor": "Guards Red / Gloss Carbon",
+      "make": "Porsche",
+      "condition": "Heavy Track Grime & Swirls",
+      "model": "911 GT3 RS",
+      "year": "2024"
+    },
+    "servicePackage": {
+      "duration": "2 Days Turnaround",
+      "basePrice": 799,
+      "name": "Stage-2 Paint Correction",
+      "id": "stage-2"
+    },
+    "selectedAddons": [
+      {
+        "price": 250,
+        "name": "Wheel-Off & Caliper 10H Ceramic Coating",
+        "id": "ceramic-wheels"
+      }
+    ],
+    "totalPrice": 1049,
+    "preferredDate": "2026-11-04",
+    "preferredTime": "08:30 AM (Morning Dropoff)",
+    "specialNotes": "Vehicle inspected in Bay 1. Pre-wash decon started.",
+    "depositPaid": false,
+    "createdAt": "2026-10-26T13:57:13.180Z",
+    "status": "IN PROGRESS",
+    "updatedAt": "2026-10-26T13:57:49.334Z"
+  },
+  {
+    "id": "BID-8921",
+    "customerName": "Daniel Vance",
+    "email": "daniel.vance@vancetech.io",
+    "phone": "+1 (415) 890-4421",
+    "vehicle": {
+      "year": "2024",
+      "make": "Porsche",
+      "model": "911 GT3 RS (992)",
+      "paintColor": "Guards Red / Exposed Carbon",
+      "condition": "Heavy Track Grime & Brake Dust"
+    },
+    "servicePackage": {
+      "id": "stage-2",
+      "name": "Stage-2 Paint Correction",
+      "duration": "2 Days Turnaround",
+      "basePrice": 799
+    },
+    "selectedAddons": [
+      {
+        "id": "ceramic-wheels",
+        "name": "Wheel Off & Caliper Ceramic",
+        "price": 250
+      },
+      {
+        "id": "interior-alcantara",
+        "name": "Alcantara Hydrophobic Shield",
+        "price": 180
+      }
+    ],
+    "totalPrice": 1229,
+    "preferredDate": "2026-11-04",
+    "preferredTime": "08:30 AM (Morning Dropoff)",
+    "specialNotes": "Car just finished 3 track days at Laguna Seca. Heavy rubber marbles on rear fenders.",
+    "status": "SCHEDULED",
+    "createdAt": "2026-10-25T14:32:00.000Z",
+    "depositPaid": true
+  },
+  {
+    "id": "BID-7734",
+    "customerName": "Elena Rostova",
+    "email": "e.rostova@monacocapital.com",
+    "phone": "+1 (305) 552-9118",
+    "vehicle": {
+      "year": "2023",
+      "make": "Ferrari",
+      "model": "F8 Tributo",
+      "paintColor": "Rosso Corsa Metallic",
+      "condition": "Dealer Swirl Marks & Light Holograms"
+    },
+    "servicePackage": {
+      "id": "ceramic-10h",
+      "name": "10H Ceramic Armor Shield",
+      "duration": "3-4 Days Turnaround",
+      "basePrice": 1499
+    },
+    "selectedAddons": [
+      {
+        "id": "glass-coating",
+        "name": "Full Glass Hydrophobic Treatment",
+        "price": 150
+      },
+      {
+        "id": "engine-bay",
+        "name": "V8 Engine Bay Cryo-Clean & Detail",
+        "price": 290
+      }
+    ],
+    "totalPrice": 1939,
+    "preferredDate": "2026-11-08",
+    "preferredTime": "09:00 AM (Flatbed Transport)",
+    "specialNotes": "Requires enclosed trailer pickup from Sunny Isles estate. Flawless mirror finish required for Concours.",
+    "status": "NEW LEAD",
+    "createdAt": "2026-10-26T08:15:00.000Z",
+    "depositPaid": false
+  },
+  {
+    "id": "BID-6512",
+    "customerName": "Marcus Sterling",
+    "email": "m.sterling@velocityholdings.co",
+    "phone": "+1 (949) 302-8877",
+    "vehicle": {
+      "year": "2022",
+      "make": "McLaren",
+      "model": "720S Spider",
+      "paintColor": "Papaya Spark Orange",
+      "condition": "Swirl Marks & Acid Rain Etching"
+    },
+    "servicePackage": {
+      "id": "ceramic-10h",
+      "name": "10H Ceramic Armor Shield",
+      "duration": "3-4 Days Turnaround",
+      "basePrice": 1499
+    },
+    "selectedAddons": [
+      {
+        "id": "ppf-front",
+        "name": "Track-Pack Self-Healing PPF",
+        "price": 1850
+      }
+    ],
+    "totalPrice": 3349,
+    "preferredDate": "2026-10-27",
+    "preferredTime": "10:00 AM",
+    "specialNotes": "Currently in curing booth bay 2. Final infrared bake scheduled.",
+    "status": "IN PROGRESS",
+    "createdAt": "2026-10-24T11:20:00.000Z",
+    "depositPaid": true
+  },
+  {
+    "id": "BID-5420",
+    "customerName": "Alexander Hayes",
+    "email": "ahayes@apexmotors.de",
+    "phone": "+1 (212) 441-9023",
+    "vehicle": {
+      "year": "2024",
+      "make": "BMW",
+      "model": "M4 CSL",
+      "paintColor": "Frozen Brooklyn Grey (Matte)",
+      "condition": "General Road Contamination"
+    },
+    "servicePackage": {
+      "id": "signature-wash",
+      "name": "Signature Decon Wash",
+      "duration": "1 Day Turnaround",
+      "basePrice": 249
+    },
+    "selectedAddons": [],
+    "totalPrice": 249,
+    "preferredDate": "2026-10-23",
+    "preferredTime": "01:30 PM",
+    "specialNotes": "Matte-specific pH neutral wash and chemical decontamination completed.",
+    "status": "COMPLETED",
+    "createdAt": "2026-10-22T16:45:00.000Z",
+    "depositPaid": true
+  }
+]
