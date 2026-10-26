@@ -447,15 +447,15 @@ export default function TurntableWashSection({ onOpenBooking }) {
         <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/40 to-black pointer-events-none z-10" />
 
         {/* Motorized Circular Turntable Stage Floor Graphic */}
-        <div className="absolute inset-x-0 bottom-0 h-40 sm:h-48 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
+        <div className="absolute inset-x-0 bottom-0 h-36 sm:h-48 flex items-center justify-center pointer-events-none z-0 overflow-hidden max-w-full">
           <div 
-            className="w-[600px] sm:w-[850px] h-[240px] sm:h-[340px] rounded-[50%] border-2 border-neutral-700/60 shadow-[0_0_80px_rgba(255,30,56,0.35)] relative flex items-center justify-center transition-transform duration-75 ease-out"
+            className="w-[95%] sm:w-[850px] max-w-[850px] h-[180px] sm:h-[340px] rounded-[50%] border-2 border-neutral-700/60 shadow-[0_0_80px_rgba(255,30,56,0.35)] relative flex items-center justify-center transition-transform duration-75 ease-out"
             style={{
               transform: `perspective(600px) rotateX(72deg) rotateZ(${normalizedAngle}deg)`,
               background: 'radial-gradient(circle, rgba(20,20,20,0.95) 0%, rgba(10,10,10,0.98) 70%, rgba(255,30,56,0.2) 100%)'
             }}
           >
-            <div className="w-[480px] sm:w-[680px] h-[190px] sm:h-[270px] rounded-[50%] border border-red-500/40 border-dashed" />
+            <div className="w-[80%] h-[75%] rounded-[50%] border border-red-500/40 border-dashed" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-full h-[1px] bg-red-500/30" />
               <div className="h-full w-[1px] bg-red-500/30 absolute" />
