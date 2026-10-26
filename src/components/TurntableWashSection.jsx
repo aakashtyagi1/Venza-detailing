@@ -37,8 +37,10 @@ export default function TurntableWashSection({ onOpenBooking }) {
   const [showDefectPins, setShowDefectPins] = useState(true);
 
   const containerRef = useRef(null);
+  const startPosRef = useRef({ x: 0, y: 0 });
   const lastClientXRef = useRef(0);
   const isInteractingRef = useRef(false);
+  const gestureLockedRef = useRef(null); // null | 'horizontal' | 'vertical'
   const animFrameRef = useRef(null);
 
   // Specifications
@@ -105,88 +107,97 @@ export default function TurntableWashSection({ onOpenBooking }) {
     };
   }, [autoRotate, rotationSpeed]);
 
-  // Global Pointer / Touch Move and Up Handlers to guarantee silky-smooth tracking
-  useEffect(() => {
-    const handleGlobalMove = (e) => {
-      if (!isInteractingRef.current) return;
-
-      const clientX = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
-      if (clientX === undefined) return;
-
-      // Prevent page scrolling on mobile during active turntable/wash interaction
-      if (e.cancelable && e.type.startsWith('touch')) {
-        e.preventDefault();
-      }
-
-      if (activeMode === 'wash') {
-        if (!containerRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = clientX - rect.left;
-        const clamped = Math.max(0, Math.min(100, (x / rect.width) * 100));
-        setSliderPos(clamped);
-      } else {
-        // Controlled, smooth delta rotation:
-        // Moving 100px rotates ~28 degrees, allowing fine, silky control without rapid spinning
-        const deltaX = clientX - lastClientXRef.current;
-        lastClientXRef.current = clientX;
-
-        // Calibrated sensitivity constant (damped, heavy luxury turntable feel)
-        const SENSITIVITY = 0.28;
-        const angleChange = deltaX * SENSITIVITY;
-
-        setRotationAngle((prev) => ((prev + angleChange) % 360 + 360) % 360);
-      }
-    };
-
-    const handleGlobalUp = () => {
-      if (isInteractingRef.current) {
-        isInteractingRef.current = false;
-        setIsRotating(false);
-        setIsDraggingSlider(false);
-      }
-    };
-
-    window.addEventListener('mousemove', handleGlobalMove, { passive: false });
-    window.addEventListener('mouseup', handleGlobalUp);
-    window.addEventListener('touchmove', handleGlobalMove, { passive: false });
-    window.addEventListener('touchend', handleGlobalUp);
-    window.addEventListener('touchcancel', handleGlobalUp);
-
-    return () => {
-      window.removeEventListener('mousemove', handleGlobalMove);
-      window.removeEventListener('mouseup', handleGlobalUp);
-      window.removeEventListener('touchmove', handleGlobalMove);
-      window.removeEventListener('touchend', handleGlobalUp);
-      window.removeEventListener('touchcancel', handleGlobalUp);
-    };
-  }, [activeMode]);
-
-  // Start Interaction
-  const handlePointerStart = (clientX, e) => {
+  // Pointer Down (Mouse, Touch, Pen)
+  const handlePointerDown = (e) => {
+    startPosRef.current = { x: e.clientX, y: e.clientY };
+    lastClientXRef.current = e.clientX;
     isInteractingRef.current = true;
-    lastClientXRef.current = clientX;
+    gestureLockedRef.current = e.pointerType === 'mouse' ? 'horizontal' : null;
 
-    if (activeMode === 'wash') {
-      setIsDraggingSlider(true);
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = clientX - rect.left;
-        setSliderPos(Math.max(0, Math.min(100, (x / rect.width) * 100)));
+    if (e.pointerType === 'mouse') {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch (err) {}
+      if (activeMode === 'wash') {
+        setIsDraggingSlider(true);
+        if (containerRef.current) {
+          const rect = containerRef.current.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          setSliderPos(Math.max(0, Math.min(100, (x / rect.width) * 100)));
+        }
+      } else {
+        setIsRotating(true);
+        setAutoRotate(false);
+        playClickSound();
       }
-    } else {
-      setIsRotating(true);
-      setAutoRotate(false);
-      playClickSound();
     }
   };
 
-  const handleMouseDown = (e) => {
-    handlePointerStart(e.clientX, e);
+  // Pointer Move (Mouse, Touch, Pen) with smart horizontal/vertical disambiguation
+  const handlePointerMove = (e) => {
+    if (!isInteractingRef.current) return;
+
+    // For touch devices, disambiguate horizontal interaction vs vertical page scrolling
+    if (gestureLockedRef.current === null) {
+      const deltaX = Math.abs(e.clientX - startPosRef.current.x);
+      const deltaY = Math.abs(e.clientY - startPosRef.current.y);
+
+      // Need at least 6px movement threshold to classify gesture
+      if (deltaX < 6 && deltaY < 6) return;
+
+      if (deltaY > deltaX) {
+        // Vertical scroll: do not interfere with page scrolling!
+        gestureLockedRef.current = 'vertical';
+        isInteractingRef.current = false;
+        return;
+      } else {
+        // Horizontal gesture: user wants to rotate turntable or drag wash slider
+        gestureLockedRef.current = 'horizontal';
+        try {
+          e.currentTarget.setPointerCapture(e.pointerId);
+        } catch (err) {}
+        if (activeMode === 'wash') {
+          setIsDraggingSlider(true);
+        } else {
+          setIsRotating(true);
+          setAutoRotate(false);
+          playClickSound();
+        }
+      }
+    }
+
+    if (gestureLockedRef.current !== 'horizontal') return;
+
+    if (activeMode === 'wash') {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const clamped = Math.max(0, Math.min(100, (x / rect.width) * 100));
+      setSliderPos(clamped);
+    } else {
+      // Damped luxury rotation (0.28 sensitivity prevents high-speed spinning)
+      const deltaX = e.clientX - lastClientXRef.current;
+      lastClientXRef.current = e.clientX;
+      const SENSITIVITY = 0.28;
+      const angleChange = deltaX * SENSITIVITY;
+      setRotationAngle((prev) => ((prev + angleChange) % 360 + 360) % 360);
+    }
   };
 
-  const handleTouchStart = (e) => {
-    if (e.touches && e.touches[0]) {
-      handlePointerStart(e.touches[0].clientX, e);
+  // Pointer Up / Cancel / Lost Capture
+  const handlePointerEnd = (e) => {
+    if (isInteractingRef.current || gestureLockedRef.current) {
+      if (e?.currentTarget && e?.pointerId !== undefined) {
+        try {
+          if (e.currentTarget.hasPointerCapture && e.currentTarget.hasPointerCapture(e.pointerId)) {
+            e.currentTarget.releasePointerCapture(e.pointerId);
+          }
+        } catch (err) {}
+      }
+      isInteractingRef.current = false;
+      gestureLockedRef.current = null;
+      setIsRotating(false);
+      setIsDraggingSlider(false);
     }
   };
 
@@ -437,10 +448,13 @@ export default function TurntableWashSection({ onOpenBooking }) {
       {/* Interactive Turntable Viewer Container */}
       <div 
         ref={containerRef}
-        onMouseDown={handleMouseDown}
-        onTouchStart={handleTouchStart}
-        className={`relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] min-h-[280px] max-h-[620px] bg-[#070707] border-x border-b border-neutral-800 overflow-hidden select-none touch-none ${
-          activeMode === 'turntable' ? 'cursor-grab active:cursor-grabbing' : 'cursor-ew-resize'
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={handlePointerEnd}
+        onLostPointerCapture={handlePointerEnd}
+        className={`relative w-full aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] min-h-[280px] max-h-[620px] bg-[#070707] border-x border-b border-neutral-800 overflow-hidden select-none touch-pan-y ${
+          activeMode === 'turntable' ? (isRotating ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-ew-resize'
         }`}
       >
         {/* Dynamic Studio Ambient Lighting & Shadow */}

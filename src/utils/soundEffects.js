@@ -5,16 +5,20 @@ let soundEnabled = true;
 
 function getAudioContext() {
   if (typeof window === 'undefined') return null;
-  if (!audioCtx) {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (AudioContextClass) {
-      audioCtx = new AudioContextClass();
+  try {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
     }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  } catch (err) {
+    return null;
   }
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  return audioCtx;
 }
 
 export const toggleSound = () => {
@@ -46,7 +50,7 @@ export const playClickSound = () => {
     osc.start();
     osc.stop(ctx.currentTime + 0.05);
   } catch (e) {
-    // Ignore audio autoplay restrictions
+    // Autoplay restrictions are safely ignored
   }
 };
 
@@ -57,8 +61,7 @@ export const playWashSound = () => {
     const ctx = getAudioContext();
     if (!ctx) return;
     
-    // Create white noise buffer
-    const bufferSize = ctx.sampleRate * 0.25;
+    const bufferSize = Math.floor(ctx.sampleRate * 0.2);
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -68,16 +71,15 @@ export const playWashSound = () => {
     const noise = ctx.createBufferSource();
     noise.buffer = buffer;
     
-    // Bandpass filter to simulate water pressure stream
     const filter = ctx.createBiquadFilter();
     filter.type = 'bandpass';
     filter.frequency.setValueAtTime(1800, ctx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(750, ctx.currentTime + 0.25);
+    filter.frequency.exponentialRampToValueAtTime(750, ctx.currentTime + 0.2);
     filter.Q.value = 2.5;
     
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
     
     noise.connect(filter);
     filter.connect(gain);
@@ -101,14 +103,14 @@ export const playGlassSound = () => {
     osc.frequency.setValueAtTime(1980, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(2640, ctx.currentTime + 0.35);
     
-    gain.gain.setValueAtTime(0.07, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    gain.gain.setValueAtTime(0.06, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
     
     osc.connect(gain);
     gain.connect(ctx.destination);
     
     osc.start();
-    osc.stop(ctx.currentTime + 0.45);
+    osc.stop(ctx.currentTime + 0.4);
   } catch (e) {}
 };
 
@@ -119,7 +121,7 @@ export const playSuccessChime = () => {
     const ctx = getAudioContext();
     if (!ctx) return;
     
-    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    const notes = [523.25, 659.25, 783.99, 1046.50];
     notes.forEach((freq, idx) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -128,14 +130,14 @@ export const playSuccessChime = () => {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, start);
       
-      gain.gain.setValueAtTime(0.09, start);
-      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.3);
+      gain.gain.setValueAtTime(0.08, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.28);
       
       osc.connect(gain);
       gain.connect(ctx.destination);
       
       osc.start(start);
-      osc.stop(start + 0.35);
+      osc.stop(start + 0.3);
     });
   } catch (e) {}
 };
